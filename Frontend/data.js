@@ -23,7 +23,7 @@ class WebinarForm {
         this.totalFields = 5;
         this.completedFields = 0;
         
-        this.debouncedUpdateProgress = this.debounce(this.updateProgress.bind(this), 150);
+        this.debouncedUpdateProgress = this.debounce(this.updateProgress.bind(this), 100);
         this.init();
     }
     
@@ -176,9 +176,10 @@ class WebinarForm {
         this.clearFieldError(field);
         // Real-time validation for better UX
         if (field.value.trim().length > 0) {
-            setTimeout(() => {
+            clearTimeout(field._validateTimer);
+            field._validateTimer = setTimeout(() => {
                 this.validateField(e);
-            }, 500);
+            }, 300);
         }
     }
     
@@ -282,15 +283,18 @@ class WebinarForm {
     
     updateProgress() {
         let completed = 0;
-        if (this.isValidField('fullName', this.fields.fullName.value)) completed++;
-        if (this.isValidField('email', this.fields.email.value)) completed++;
-        if (this.isValidField('phone', this.fields.phone.value)) completed++;
-        if (this.isValidField('company', this.fields.company.value)) completed++;
+        ['fullName', 'email', 'phone', 'company'].forEach(fieldName => {
+            if (this.isValidField(fieldName, this.fields[fieldName].value)) completed++;
+        });
         const selectedInterest = this.selectedInterest || document.querySelector('input[name="interest"]:checked');
         if (selectedInterest) completed++;
         const percentage = Math.round((completed / this.totalFields) * 100);
-        this.progressBar.style.width = `${percentage}%`;
-        this.animateNumber(this.progressPercent, parseInt(this.progressPercent.textContent), percentage);
+        if (this.progressBar.style.width !== `${percentage}%`) {
+            this.progressBar.style.width = `${percentage}%`;
+        }
+        if (parseInt(this.progressPercent.textContent) !== percentage) {
+            this.animateNumber(this.progressPercent, parseInt(this.progressPercent.textContent), percentage);
+        }
         this.completedFields = completed;
     }
     
