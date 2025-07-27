@@ -1,13 +1,10 @@
-# 🎯 Advanced Webinar Registration Platform
+# 🎯 Webinar Registration Form
 
 <div align="center">
 
 ![Webinar Platform](https://img.shields.io/badge/Webinar-Platform-6B73FF?style=for-the-badge&logo=video&logoColor=white)
 ![Open Source](https://img.shields.io/badge/Open-Source-brightgreen?style=for-the-badge&logo=github)
 ![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-orange?style=for-the-badge&logo=handshake)
-
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/webinar-platform?style=social)](https://github.com/yourusername/webinar-platform/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/webinar-platform?style=social)](https://github.com/yourusername/webinar-platform/network)
 
 **Modern, full-stack webinar management solution built for the future**
 
