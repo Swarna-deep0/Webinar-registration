@@ -174,8 +174,6 @@ class WebinarForm {
     handleFieldInput(e) {
         const field = e.target;
         this.clearFieldError(field);
-        this.updateProgress();
-        
         // Real-time validation for better UX
         if (field.value.trim().length > 0) {
             setTimeout(() => {
