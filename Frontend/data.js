@@ -14,10 +14,16 @@ class WebinarForm {
             company: document.getElementById('company'),
             interest: document.querySelectorAll('input[name="interest"]')
         };
+        this.selectedInterest = null;
+        this.EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        this.PHONE_REGEX = /^[\+]?[1-9][\d]{0,15}$/;
+        this.NAME_REGEX = /^[a-zA-Z\s]+$/;
         
-        this.totalFields = Object.keys(this.fields).length;
+        // 4 text fields + 1 interest selection
+        this.totalFields = 5;
         this.completedFields = 0;
         
+        this.debouncedUpdateProgress = this.debounce(this.updateProgress.bind(this), 150);
         this.init();
     }
     
@@ -32,15 +38,21 @@ class WebinarForm {
     setupEventListeners() {
         // Form submission
         this.form.addEventListener('submit', this.handleSubmit.bind(this));
-        
         // Input field events
-        Object.values(this.fields).forEach(field => {
-            if (field.length) { // For radio buttons
+        Object.entries(this.fields).forEach(([key, field]) => {
+            if (key === 'interest') {
                 field.forEach(radio => {
-                    radio.addEventListener('change', this.handleFieldChange.bind(this));
+                    radio.addEventListener('change', (e) => {
+                        this.handleFieldChange(e);
+                        this.selectedInterest = e.target;
+                        this.debouncedUpdateProgress();
+                    });
                 });
-            } else { // For regular inputs
-                field.addEventListener('input', this.handleFieldInput.bind(this));
+            } else {
+                field.addEventListener('input', (e) => {
+                    this.handleFieldInput(e);
+                    this.debouncedUpdateProgress();
+                });
                 field.addEventListener('blur', this.validateField.bind(this));
                 field.addEventListener('focus', this.handleFieldFocus.bind(this));
             }
@@ -63,29 +75,35 @@ class WebinarForm {
             fullName: (value) => {
                 if (!value.trim()) return 'Full name is required';
                 if (value.trim().length < 2) return 'Name must be at least 2 characters';
-                if (!/^[a-zA-Z\s]+$/.test(value)) return 'Name can only contain letters and spaces';
+                if (!this.NAME_REGEX.test(value)) return 'Name can only contain letters and spaces';
                 return null;
             },
-            
             email: (value) => {
                 if (!value.trim()) return 'Email is required';
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                if (!emailRegex.test(value)) return 'Please enter a valid email address';
+                if (!this.EMAIL_REGEX.test(value)) return 'Please enter a valid email address';
                 return null;
             },
-            
             phone: (value) => {
                 if (!value.trim()) return 'Phone number is required';
-                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-                if (!phoneRegex.test(value.replace(/[\s\-\(\)]/g, ''))) return 'Please enter a valid phone number';
+                if (!this.PHONE_REGEX.test(value.replace(/[\s\-\(\)]/g, ''))) return 'Please enter a valid phone number';
                 return null;
             },
-            
             company: (value) => {
                 if (!value.trim()) return 'Company/Organization is required';
                 if (value.trim().length < 2) return 'Company name must be at least 2 characters';
                 return null;
             }
+        };
+    }
+    isValidField(fieldName, value) {
+        const validator = this.validators[fieldName];
+        return validator && !validator(value);
+    }
+    debounce(fn, delay) {
+        let timer;
+        return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
         };
     }
     
@@ -266,28 +284,15 @@ class WebinarForm {
     
     updateProgress() {
         let completed = 0;
-        
-        // Check text inputs
-        ['fullName', 'email', 'phone', 'company'].forEach(fieldName => {
-            if (this.fields[fieldName].value.trim()) {
-                completed++;
-            }
-        });
-        
-        // Check interest selection
-        const selectedInterest = document.querySelector('input[name="interest"]:checked');
-        if (selectedInterest) {
-            completed++;
-        }
-        
+        if (this.isValidField('fullName', this.fields.fullName.value)) completed++;
+        if (this.isValidField('email', this.fields.email.value)) completed++;
+        if (this.isValidField('phone', this.fields.phone.value)) completed++;
+        if (this.isValidField('company', this.fields.company.value)) completed++;
+        const selectedInterest = this.selectedInterest || document.querySelector('input[name="interest"]:checked');
+        if (selectedInterest) completed++;
         const percentage = Math.round((completed / this.totalFields) * 100);
-        
-        // Animate progress bar
         this.progressBar.style.width = `${percentage}%`;
-        
-        // Animate percentage text
         this.animateNumber(this.progressPercent, parseInt(this.progressPercent.textContent), percentage);
-        
         this.completedFields = completed;
     }
     
