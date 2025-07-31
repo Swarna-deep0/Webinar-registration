@@ -6,27 +6,55 @@
     <title>Advanced Webinar Registration Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
+    <style>
+      /* Parallax effect for background orbs */
+      .parallax-orb {
+        will-change: transform;
+        transition: transform 0.5s cubic-bezier(.23,1,.32,1);
+      }
+      body[data-parallax] .parallax-orb {
+        /* JS will update transform */
+      }
+      /* 3D Button effect */
+      .btn-3d {
+        box-shadow: 0 8px 24px 0 rgba(80,0,160,0.25), 0 1.5px 0 0 #fff inset;
+        transform: perspective(600px) translateZ(0) scale(1) rotateX(0deg);
+        transition: box-shadow 0.3s, transform 0.3s;
+      }
+      .btn-3d:active {
+        box-shadow: 0 2px 8px 0 rgba(80,0,160,0.18), 0 1.5px 0 0 #fff inset;
+        transform: perspective(600px) translateZ(-8px) scale(0.98) rotateX(6deg);
+      }
+      .btn-3d-glow {
+        box-shadow: 0 0 0 0 #fff, 0 0 32px 0 #a78bfa, 0 0 64px 0 #f472b6;
+        animation: btnGlow 2s infinite alternate;
+      }
+      @keyframes btnGlow {
+        0% { box-shadow: 0 0 0 0 #fff, 0 0 32px 0 #a78bfa, 0 0 64px 0 #f472b6; }
+        100% { box-shadow: 0 0 0 0 #fff, 0 0 48px 0 #a78bfa, 0 0 96px 0 #f472b6; }
+      }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body class="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 font-inter overflow-x-hidden">
     <!-- Background Elements -->
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
-        <!-- Animated Gradient Orbs -->
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div class="absolute top-40 left-40 w-80 h-80 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <!-- Animated Gradient Orbs (Tailwind advanced animation) -->
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-spin-slow parallax-orb" id="orb1"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-ping parallax-orb" id="orb2"></div>
+        <div class="absolute top-40 left-40 w-80 h-80 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse parallax-orb" id="orb3"></div>
         
         <!-- Floating Particles -->
         <div class="particles-container">
-            <div class="particle particle-1"></div>
-            <div class="particle particle-2"></div>
-            <div class="particle particle-3"></div>
-            <div class="particle particle-4"></div>
-            <div class="particle particle-5"></div>
-            <div class="particle particle-6"></div>
-            <div class="particle particle-7"></div>
-            <div class="particle particle-8"></div>
+            <div class="particle particle-1 animate-ping"></div>
+            <div class="particle particle-2 animate-spin"></div>
+            <div class="particle particle-3 animate-bounce"></div>
+            <div class="particle particle-4 animate-pulse"></div>
+            <div class="particle particle-5 animate-ping"></div>
+            <div class="particle particle-6 animate-spin"></div>
+            <div class="particle particle-7 animate-bounce"></div>
+            <div class="particle particle-8 animate-pulse"></div>
         </div>
         
         <!-- Grid Pattern -->
@@ -86,12 +114,13 @@
                     <div class="relative">
                         <input type="text" 
                                id="fullName" 
-                               class="form-input peer w-full bg-white/10 border border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm" 
+                               class="form-input peer w-full bg-white/10 border-b-2 border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:shadow-blue-400/40 focus:shadow-lg transition-all duration-300 backdrop-blur-sm animate-fadeIn animate-duration-700 animate-ease-in-out focus:animate-pulse" 
                                placeholder="Full Name"
                                required
                                autocomplete="name">
+                        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-500 peer-focus:w-full"></span>
                         <label for="fullName" 
-                               class="floating-label">
+                               class="floating-label transition-all duration-500 ease-in-out animate-fadeIn">
                             <i class="fas fa-user mr-2"></i>Full Name
                         </label>
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/20 to-purple-500/20 opacity-0 transition-opacity duration-300 pointer-events-none peer-focus:opacity-100"></div>
@@ -107,12 +136,13 @@
                     <div class="relative">
                         <input type="email" 
                                id="email" 
-                               class="form-input peer w-full bg-white/10 border border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm" 
+                               class="form-input peer w-full bg-white/10 border-b-2 border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:shadow-blue-400/40 focus:shadow-lg transition-all duration-300 backdrop-blur-sm animate-fadeIn animate-duration-700 animate-ease-in-out focus:animate-pulse" 
                                placeholder="Email Address"
                                required
                                autocomplete="email">
+                        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-500 peer-focus:w-full"></span>
                         <label for="email" 
-                               class="floating-label">
+                               class="floating-label transition-all duration-500 ease-in-out animate-fadeIn">
                             <i class="fas fa-envelope mr-2"></i>Email Address
                         </label>
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/20 to-purple-500/20 opacity-0 transition-opacity duration-300 pointer-events-none peer-focus:opacity-100"></div>
@@ -128,12 +158,13 @@
                     <div class="relative">
                         <input type="tel" 
                                id="phone" 
-                               class="form-input peer w-full bg-white/10 border border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm" 
+                               class="form-input peer w-full bg-white/10 border-b-2 border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:shadow-blue-400/40 focus:shadow-lg transition-all duration-300 backdrop-blur-sm animate-fadeIn animate-duration-700 animate-ease-in-out focus:animate-pulse" 
                                placeholder="Phone Number"
                                required
                                autocomplete="tel">
+                        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-500 peer-focus:w-full"></span>
                         <label for="phone" 
-                               class="floating-label">
+                               class="floating-label transition-all duration-500 ease-in-out animate-fadeIn">
                             <i class="fas fa-phone mr-2"></i>Phone Number
                         </label>
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/20 to-purple-500/20 opacity-0 transition-opacity duration-300 pointer-events-none peer-focus:opacity-100"></div>
@@ -149,12 +180,13 @@
                     <div class="relative">
                         <input type="text" 
                                id="company" 
-                               class="form-input peer w-full bg-white/10 border border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 backdrop-blur-sm" 
+                               class="form-input peer w-full bg-white/10 border-b-2 border-white/30 text-white placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:shadow-blue-400/40 focus:shadow-lg transition-all duration-300 backdrop-blur-sm animate-fadeIn animate-duration-700 animate-ease-in-out focus:animate-pulse" 
                                placeholder="Company/Organization"
                                required
                                autocomplete="organization">
+                        <span class="absolute left-0 bottom-0 w-0 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500 transition-all duration-500 peer-focus:w-full"></span>
                         <label for="company" 
-                               class="floating-label">
+                               class="floating-label transition-all duration-500 ease-in-out animate-fadeIn">
                             <i class="fas fa-building mr-2"></i>Company/Organization
                         </label>
                         <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-400/20 to-purple-500/20 opacity-0 transition-opacity duration-300 pointer-events-none peer-focus:opacity-100"></div>
@@ -205,10 +237,10 @@
                 <!-- Submit Button -->
                 <button type="submit" 
                         id="submitBtn"
-                        class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed animate-slideInUp animation-delay-800 relative overflow-hidden group">
+                        class="w-full py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg btn-3d btn-3d-glow hover:shadow-2xl hover:scale-105 transform transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed animate-slideInUp animation-delay-800 relative overflow-hidden group">
                     <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
                     <div class="relative flex items-center justify-center">
-                        <span class="btn-text">Register Now</span>
+                        <span class="btn-text drop-shadow-lg">Register Now</span>
                         <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform duration-300"></i>
                     </div>
                     <div class="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 skew-x-12"></div>
@@ -243,5 +275,21 @@
     </div>
 
     <script src="data.js"></script>
+    <script>
+    // Parallax effect for orbs
+    const orb1 = document.getElementById('orb1');
+    const orb2 = document.getElementById('orb2');
+    const orb3 = document.getElementById('orb3');
+    function parallax(e) {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      orb1.style.transform = `translate3d(${x * 30}px,${y * 30}px,0) scale(1.05)`;
+      orb2.style.transform = `translate3d(${x * -20}px,${y * -20}px,0) scale(1.08)`;
+      orb3.style.transform = `translate3d(${x * 15}px,${y * 15}px,0) scale(1.03)`;
+    }
+    document.body.setAttribute('data-parallax', 'true');
+    window.addEventListener('mousemove', parallax);
+    </script>
 </body>
+    <!-- Tailwind handles all animation classes above -->
 </html>
